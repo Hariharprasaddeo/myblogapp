@@ -1,0 +1,27 @@
+@RestController
+@RequestMapping("/api/otp")
+public class OtpController {
+
+@Autowired
+private OtpService otpService;
+
+@PostMapping("/send")
+public ResponseEntity<String> sendOtp(@RequestParam String phoneNumber) {
+    String otp = otpService.generateOtp();
+    boolean sent = otpService.sendOtp(phoneNumber, otp);
+    if (sent) {
+    return ResponseEntity.ok("OTP sent successfully");
+    } else {
+    return ResponseEntity.badRequest().body("Failed to send OTP");
+    }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<String> verifyOtp(@RequestParam String phoneNumber, @RequestParam String otp) {
+        if (otpService.verifyOtp(phoneNumber, otp)) {
+        return ResponseEntity.ok("OTP is valid");
+        } else {
+        return ResponseEntity.badRequest().body("Invalid OTP");
+        }
+        }
+        }
